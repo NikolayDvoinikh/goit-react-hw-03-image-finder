@@ -9,7 +9,7 @@ import styles from './app.module.scss';
 export class App extends Component {
   state = {
     items: [],
-    searchImage: 'cat',
+    searchImage: '',
     page: 1,
   };
 
@@ -28,8 +28,30 @@ export class App extends Component {
   //   this.setState({ page: this.state.page + 1 });
   //   return await axios.get(`${BASE_URL}`, { params });
   // }
+  totalPages = 0;
 
-  componentDidMount() {
+  // componentDidMount() {
+  //   const BASE_URL = 'https://pixabay.com/api/';
+  //   const KEY = '31897410-2ad942b2553f3b748c6dbcf15';
+  //   const params = {
+  //     key: `${KEY}`,
+  //     q: `${this.state.searchImage}`,
+  //     image_type: 'photo',
+  //     orientation: 'horizontal',
+  //     page: `${this.state.page}`,
+  //     per_page: 12,
+  //   };
+
+  //   axios.get(`${BASE_URL}`, { params }).then(({ data: { hits } }) => {
+  //     console.log(hits);
+  //     this.setState({
+  //       items: hits,
+  //       page: 2,
+  //     });
+  //   });
+  // }
+
+  componentDidUpdate(prevProps, prevState) {
     const BASE_URL = 'https://pixabay.com/api/';
     const KEY = '31897410-2ad942b2553f3b748c6dbcf15';
     const params = {
@@ -40,12 +62,16 @@ export class App extends Component {
       page: `${this.state.page}`,
       per_page: 12,
     };
-
-    axios.get(`${BASE_URL}`, { params }).then(({ data: { hits } }) => {
-      console.log(hits);
+    if (prevState.page === this.state.page) {
+      return;
+    }
+    axios.get(`${BASE_URL}`, { params }).then(({ data: { hits, total } }) => {
+      console.log(total);
+      this.totalPages = total / params.per_page;
+      console.log(this.totalPages);
       this.setState({
         items: hits,
-        page: 2,
+        page: this.state.page,
       });
     });
   }
@@ -53,17 +79,19 @@ export class App extends Component {
   onSubmitHandler = searchImg => {
     this.setState({
       searchImage: searchImg,
+      page: 2,
     });
   };
 
   nextPage = () => this.setState({ page: this.state.page + 1 });
-
   render() {
     return (
       <div className={styles.app}>
         <Searchbar onSubmit={this.onSubmitHandler} />
         <ImageGallery response={this.state.items} />
-        <Button moreImg={this.nextPage} />
+        {this.totalPages && this.totalPages > this.state.page && (
+          <Button moreImg={this.nextPage} />
+        )}
       </div>
     );
   }
