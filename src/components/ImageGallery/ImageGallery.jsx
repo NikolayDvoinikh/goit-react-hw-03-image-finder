@@ -1,5 +1,5 @@
 import ImageGalleryItem from './ImageGalleryItem';
-
+import PropTypes from 'prop-types';
 import styles from './image-gallery.module.scss';
 
 const ImageGallery = ({ response, showLargeImage }) => {
@@ -22,3 +22,8 @@ ImageGallery.defaultProps = {
 };
 
 export default ImageGallery;
+
+ImageGallery.propTypes = {
+  response: PropTypes.arrayOf(PropTypes.object),
+  showLargeImage: PropTypes.func.isRequired,
+};

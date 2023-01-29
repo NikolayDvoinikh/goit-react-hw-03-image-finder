@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import styles from './button.module.scss';
 
 const Button = ({ moreImg }) => {
@@ -9,3 +10,7 @@ const Button = ({ moreImg }) => {
 };
 
 export default Button;
+
+Button.propTypes = {
+  moreImg: PropTypes.func.isRequired,
+};
