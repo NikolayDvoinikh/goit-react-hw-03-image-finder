@@ -4,6 +4,8 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import { apiImages } from '../shared/services/api';
 import { Dna } from 'react-loader-spinner';
+import Modal from './Modal/Modal';
+
 import styles from './app.module.scss';
 
 export class App extends Component {
@@ -14,7 +16,8 @@ export class App extends Component {
     loading: false,
     error: null,
     showModal: false,
-    LargeImage: null,
+    largeImage: null,
+    totalHits: null,
   };
 
   // async getImages() {
@@ -44,9 +47,10 @@ export class App extends Component {
     try {
       this.setState({ loading: true });
       const { searchImage, page } = this.state;
-      const { hits } = await apiImages(searchImage, page);
+      const { hits, totalHits } = await apiImages(searchImage, page);
       this.setState(({ items }) => ({
         items: [...items, ...hits],
+        totalHits: totalHits,
       }));
     } catch (error) {
       this.setState({ error: error.message });
@@ -63,10 +67,24 @@ export class App extends Component {
     });
   };
 
+  showLargeImage = picture => {
+    this.setState({
+      largeImage: picture,
+      showModal: true,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      showModal: false,
+      largeImage: null,
+    });
+  };
+
   nextPage = () => this.setState(({ page }) => ({ page: page + 1 }));
   render() {
-    const { loading, items } = this.state;
-    const { onSubmitHandler, nextPage } = this;
+    const { loading, items, totalHits, largeImage, showModal } = this.state;
+    const { onSubmitHandler, nextPage, closeModal, showLargeImage } = this;
     return (
       <div className={styles.app}>
         <Searchbar onSubmit={onSubmitHandler} />
@@ -79,8 +97,10 @@ export class App extends Component {
             wrapperClass={styles.dna_wrapper}
           />
         )}
-        <ImageGallery response={items} />
-        {Boolean(items.length) && <Button moreImg={nextPage} />}
+        <ImageGallery response={items} showLargeImage={showLargeImage} />
+        {totalHits > items.length && <Button moreImg={nextPage} />}
+        {showModal && <Modal close={closeModal} largeImg={largeImage} />}
+        {/* <Modal close={closeModal} largeImg={largeImage} /> */}
       </div>
     );
   }

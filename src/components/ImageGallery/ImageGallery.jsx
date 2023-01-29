@@ -3,11 +3,17 @@ import ImageGalleryItem from './ImageGalleryItem';
 import styles from './image-gallery.module.scss';
 
 const ImageGallery = ({ response, showLargeImage }) => {
-  const elements = response.map(({ id, webformatURL }) => {
+  const elements = response.map(({ id, webformatURL, largeImageURL }) => {
     return (
-      <ImageGalleryItem onClick={showLargeImage} key={id} url={webformatURL} />
+      <ImageGalleryItem
+        key={id}
+        id={largeImageURL}
+        url={webformatURL}
+        imgClick={showLargeImage}
+      />
     );
   });
+
   return <ul className={styles.imageGallery}>{elements}</ul>;
 };
 
