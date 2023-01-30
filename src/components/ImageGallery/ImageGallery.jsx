@@ -7,7 +7,7 @@ const ImageGallery = ({ response, showLargeImage }) => {
     return (
       <ImageGalleryItem
         key={id}
-        id={largeImageURL}
+        largeImg={largeImageURL}
         url={webformatURL}
         imgClick={showLargeImage}
       />
@@ -17,13 +17,15 @@ const ImageGallery = ({ response, showLargeImage }) => {
   return <ul className={styles.imageGallery}>{elements}</ul>;
 };
 
-ImageGallery.defaultProps = {
-  items: [],
-};
-
 export default ImageGallery;
 
 ImageGallery.propTypes = {
-  response: PropTypes.arrayOf(PropTypes.object),
+  response: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      webformatURL: PropTypes.string.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+    })
+  ),
   showLargeImage: PropTypes.func.isRequired,
 };

@@ -15,7 +15,6 @@ export class App extends Component {
     page: 1,
     loading: false,
     error: null,
-    showModal: false,
     largeImage: null,
     totalHits: null,
   };
@@ -44,30 +43,31 @@ export class App extends Component {
   }
 
   onSubmitHandler = searchImg => {
-    this.setState({
-      searchImage: searchImg,
-      page: 1,
-      items: [],
-    });
+    if (searchImg !== this.state.searchImage) {
+      this.setState({
+        searchImage: searchImg,
+        page: 1,
+        items: [],
+      });
+    }
   };
 
   showLargeImage = picture => {
     this.setState({
       largeImage: picture,
-      showModal: true,
     });
   };
 
   closeModal = () => {
     this.setState({
-      showModal: false,
       largeImage: null,
     });
   };
 
   nextPage = () => this.setState(({ page }) => ({ page: page + 1 }));
+
   render() {
-    const { loading, items, totalHits, largeImage, showModal } = this.state;
+    const { loading, items, totalHits, largeImage } = this.state;
     const { onSubmitHandler, nextPage, closeModal, showLargeImage } = this;
     return (
       <div className={styles.app}>
@@ -83,7 +83,7 @@ export class App extends Component {
         )}
         <ImageGallery response={items} showLargeImage={showLargeImage} />
         {totalHits > items.length && <Button moreImg={nextPage} />}
-        {showModal && (
+        {largeImage && (
           <Modal close={closeModal}>
             <img className={styles.img} src={largeImage} alt="bigImg" />
           </Modal>
