@@ -83,7 +83,11 @@ export class App extends Component {
         )}
         <ImageGallery response={items} showLargeImage={showLargeImage} />
         {totalHits > items.length && <Button moreImg={nextPage} />}
-        {showModal && <Modal close={closeModal} largeImg={largeImage} />}
+        {showModal && (
+          <Modal close={closeModal}>
+            <img className={styles.img} src={largeImage} alt="bigImg" />
+          </Modal>
+        )}
       </div>
     );
   }
